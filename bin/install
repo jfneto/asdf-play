@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+# this is global for error reporting
+ASDF_PLAY_ERROR=""
+
+# Download the Play! source from PlayFramework!, copy files and cleanup.
+install_play() {
+
+	local version=$1
+	local destdir=$2
+
+	get_play $version $destdir
+	[[ -z "$ASDF_PLAY_ERROR" ]] || return
+
+	unpack_play $destdir
+	[[ -z "$ASDF_PLAY_ERROR" ]] || return
+}
+
+get_base_url() {
+	echo "https://downloads.typesafe.com/play/"
+}
+
+# Download play.
+get_play() {
+
+	local version=$2
+	local destdir=$4
+
+	local base=$(get_base_url)
+
+	url=$base$version/play-$version.zip ;;
+
+	echo "---- ASDF PLAY MESSAGE ----"
+	echo "downloading: $url"
+
+	curl -fLC - \
+		--progress-bar --silent \
+		--retry 3 --retry-delay 3 \
+		-o $destdir $url
+
+}
+
+# Unpacks all kinds of sources.
+unpack_play() {
+
+	local destdir=$1
+
+	echo "---- ASDF PLAY MESSAGE ----"
+	echo "expanding play dist"
+
+	unpack_zip $destdir ;;
+
+}
+
+# Unarchive a tar archive into the install directory and cleanup.
+#
+# NOTE: Using $origin as a memo rather than executing in a subshell
+#   because errors won't be persisted from a subshell.
+#
+# TODO: Should be sanitized with error reporting.
+unpack_zip() {
+
+	local destdir=$1
+
+	local origin=$(pwd)
+	cd $destdir; {
+		unzip play-$version.zip
+		[[ $? == 0 ]] || ASDF_PLAY_ERROR="expanding play dist"
+		rm play-$version.zip
+	}; cd $origin
+}
+
+#
+# MAIN
+#
+install_play $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
+
+if ! [[ -z "$ASDF_PLAY_ERROR" ]]; then
+	rm -rf $ASDF_INSTALL_PATH
+
+	echo "---- ASDF PLAY ERROR ----"
+	echo "asdf play failed while $ASDF_PLAY_ERROR"
+	echo "----"
+fi
+unset ASDF_PLAY_ERROR
