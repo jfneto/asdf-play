@@ -28,7 +28,7 @@ get_play() {
 
 	local base=$(get_base_url)
 
-	url=$base$version/play-$version.zip ;;
+	url=$base$version/play-$version.zip
 
 	echo "---- ASDF PLAY MESSAGE ----"
 	echo "downloading: $url"
@@ -48,7 +48,7 @@ unpack_play() {
 	echo "---- ASDF PLAY MESSAGE ----"
 	echo "expanding play dist"
 
-	unpack_zip $destdir ;;
+	unpack_zip $destdir
 
 }
 
