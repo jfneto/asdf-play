@@ -23,8 +23,8 @@ get_base_url() {
 # Download play.
 get_play() {
 
-	local version=$2
-	local destdir=$4
+	local version=$1
+	local destdir=$2
 
 	local base=$(get_base_url)
 
@@ -36,7 +36,9 @@ get_play() {
 	curl -fLC - \
 		--progress-bar --silent \
 		--retry 3 --retry-delay 3 \
-		-o $destdir $url
+		-o $destdir/play-$version.zip $url
+
+	[[ $? != 0 ]] && ASDF_PLAY_ERROR="downloading play dist"
 
 }
 
@@ -67,6 +69,11 @@ unpack_zip() {
 		unzip play-$version.zip
 		[[ $? == 0 ]] || ASDF_PLAY_ERROR="expanding play dist"
 		rm play-$version.zip
+
+		local pkg=$(echo * | grep play)
+		mv $pkg/* .
+		rmdir $pkg
+
 	}; cd $origin
 }
 
