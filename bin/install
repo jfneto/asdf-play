@@ -51,7 +51,7 @@ unpack_play() {
 
 	local destdir=$1
 
-	echo "expanding play zip file"
+	echo "---- expanding play zip file"
 
 	unpack_zip $destdir
 
