@@ -9,11 +9,16 @@ install_play() {
 	local version=$1
 	local destdir=$2
 
+	echo "---- INSTALLING ASDF PLAY $version ----"
+
 	get_play $version $destdir
 	[[ -z "$ASDF_PLAY_ERROR" ]] || return
 
 	unpack_play $destdir
 	[[ -z "$ASDF_PLAY_ERROR" ]] || return
+
+	echo "---- ASDF PLAY $version SUCCESSFULLY INSTALLED ----"
+
 }
 
 get_base_url() {
@@ -30,8 +35,7 @@ get_play() {
 
 	url=$base$version/play-$version.zip
 
-	echo "---- ASDF PLAY MESSAGE ----"
-	echo "downloading: $url"
+	echo "---- downloading play: $url"
 
 	curl -fLC - \
 		--progress-bar --silent \
@@ -47,8 +51,7 @@ unpack_play() {
 
 	local destdir=$1
 
-	echo "---- ASDF PLAY MESSAGE ----"
-	echo "expanding play dist"
+	echo "expanding play zip file"
 
 	unpack_zip $destdir
 
@@ -67,7 +70,7 @@ unpack_zip() {
 	local origin=$(pwd)
 	cd $destdir; {
 		unzip -q play-$version.zip
-		[[ $? == 0 ]] || ASDF_PLAY_ERROR="expanding play dist"
+		[[ $? == 0 ]] || ASDF_PLAY_ERROR="expanding play zip file"
 		rm play-$version.zip
 
 		local pkg=$(echo * | grep play)
