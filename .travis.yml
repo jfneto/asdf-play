@@ -1,7 +1,7 @@
 language: c
 script: asdf plugin-test play https://github.com/teixeiradiego/asdf-play.git
 before_script:
-  - git clone https://github.com/asdf-vm/asdf.git --branch v0.5.1
+  - git clone https://github.com/asdf-vm/asdf.git
   - . asdf/asdf.sh
 os:
   - windows
